@@ -54,6 +54,8 @@ epochs: 20
 # predict
 model_path: "./models/mobilenetv3large.h5"
 image_path: "./test/image/without_mask.png"
+using_tflite: True
+tflite_path: "./outputs/20220920_132501/model/model.tflite"
 ```
 
 ## training
@@ -91,8 +93,8 @@ python predict.py
 output:
 
 ```
-Model loaded
-image_path: ./test/data/without_mask.png
-[[1.000000e+00 7.350202e-23]]
-without_mask
+image_path: ./test/image/without_mask.png
+using tflite
+output_data: [[1.000000e+00 7.350623e-23]]
+label: without_mask
 ```

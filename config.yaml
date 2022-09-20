@@ -6,5 +6,7 @@ batch_size: 32
 epochs: 20
 
 # predict
-image_path: "./test/data/without_mask.png"
+image_path: "./test/image/without_mask.png"
 model_path: "./outputs/20220920_132501/model/model.h5"
+using_tflite: False
+tflite_path: "./outputs/20220920_132501/model/model.tflite"

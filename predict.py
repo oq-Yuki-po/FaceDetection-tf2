@@ -10,11 +10,6 @@ def predict():
     label = {0: "without_mask", 1: "with_mask"}
 
     config = load_yaml("config.yaml")
-    model_path = config["model_path"]
-    model = load_model(model_path)
-
-    typer.echo("Model loaded")
-
     image_path = config["image_path"]
     typer.echo("image_path: {}".format(image_path))
 
@@ -23,11 +18,27 @@ def predict():
     image = tf.image.resize(image, config["input_shape"][0:2])
     image = tf.expand_dims(image, axis=0)
 
-    pred = model.predict(image)
+    using_tflite = config["using_tflite"]
 
-    typer.echo(pred)
-
-    typer.echo(label[pred.argmax()])
+    if using_tflite:
+        typer.echo("using tflite")
+        tflite_path = config["tflite_path"]
+        interpreter = tf.lite.Interpreter(model_path=tflite_path)
+        interpreter.allocate_tensors()
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
+        interpreter.set_tensor(input_details[0]['index'], image)
+        interpreter.invoke()
+        output_data = interpreter.get_tensor(output_details[0]['index'])
+        typer.echo("output_data: {}".format(output_data))
+        typer.echo("label: {}".format(label[output_data.argmax()]))
+    else:
+        typer.echo("using h5")
+        model_path = config["model_path"]
+        model = load_model(model_path)
+        pred = model.predict(image)
+        typer.echo(pred)
+        typer.echo(label[pred.argmax()])
 
 
 if __name__ == "__main__":
