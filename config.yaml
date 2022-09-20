@@ -1,9 +1,10 @@
-# general
-
 # train
 data_path: "./data/tfrecord"
 input_shape: [112, 112, 3]
 backbone_type: "MobileNetV3Large"
 batch_size: 32
 epochs: 20
+
 # predict
+image_path: "./test/data/without_mask.png"
+model_path: "./outputs/20220920_132501/model/model.h5"

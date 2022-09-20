@@ -33,8 +33,13 @@ def main(dataset_path: str = './data/train',
     if not Path(dataset_path).exists():
         raise ValueError('Please define valid dataset path.')
 
-    p_image_path = list(Path(dataset_path).glob('**/*.png'))
+    if not Path(output_path).exists():
+        Path(output_path).mkdir(parents=True)
 
+    # fetch all images
+    p_image_path = list(Path(dataset_path).glob('**/*.jpg')) + list(Path(dataset_path).glob('**/*.png'))
+
+    # check image read correctly
     p_readable_image_path = [i for i in p_image_path if cv2.imread(str(i)) is not None]
 
     labels = [1 if i.parent.name == "with_mask" else 0 for i in p_readable_image_path]

@@ -4,7 +4,6 @@ from pathlib import Path
 
 import tensorflow as tf
 import typer
-from tensorflow.keras import Model
 
 from modules.dataset import DataSet
 from modules.model import FaceMaskDetection
@@ -18,6 +17,10 @@ def train():
     now_str = now.strftime("%Y%m%d_%H%M%S")
     output_dir = Path("outputs") / now_str
     output_dir.mkdir(parents=True, exist_ok=True)
+    output_model_dir = output_dir / "model"
+    output_model_dir.mkdir(parents=True, exist_ok=True)
+    output_log_dir = output_dir / "tensorboard"
+    output_log_dir.mkdir(parents=True, exist_ok=True)
 
     # load config
     config = load_yaml("config.yaml")
@@ -46,8 +49,8 @@ def train():
         # define callbacks
         callbacks = [
             tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, mode='min'),
-            tf.keras.callbacks.TensorBoard(log_dir=str(output_dir), histogram_freq=1),
-            tf.keras.callbacks.ModelCheckpoint(str(output_dir / "model.h5"),
+            tf.keras.callbacks.TensorBoard(log_dir=str(output_log_dir), histogram_freq=1),
+            tf.keras.callbacks.ModelCheckpoint(str(output_model_dir / "model.h5"),
                                                monitor='val_loss',
                                                save_best_only=True,
                                                mode='min')
@@ -62,10 +65,10 @@ def train():
         model.fit(train_ds, epochs=10, validation_data=val_ds)
 
         # load best model
-        best_model = tf.keras.models.load_model(str(output_dir / "model.h5"))
+        best_model = tf.keras.models.load_model(str(output_model_dir / "model.h5"))
 
         # convert to tflite
-        face_detection_model.convert_tflite(best_model, str(output_dir / "model.tflite"))
+        face_detection_model.convert_tflite(best_model, str(output_model_dir / "model.tflite"))
 
     except Exception as e:
         print(e)
