@@ -38,7 +38,6 @@ class DataSet:
             x_train = tf.image.random_flip_left_right(x_train)
             x_train = tf.image.random_saturation(x_train, 0.6, 1.4)
             x_train = tf.image.random_brightness(x_train, 0.5)
-            x_train = tf.cast(x_train, tf.float32) / 255.0
 
             return x_train
         return transform_images
@@ -55,7 +54,6 @@ class DataSet:
             raw_dataset = raw_dataset.shuffle(buffer_size=buffer_size)
         else:
             raw_dataset = tf.data.TFRecordDataset(self.validation_path)
-        # raw_dataset = raw_dataset.repeat(-1)
         dataset = raw_dataset.map(self._parse_tfrecord(is_training),
                                   num_parallel_calls=tf.data.experimental.AUTOTUNE)
         dataset = dataset.shuffle(buffer_size=buffer_size)

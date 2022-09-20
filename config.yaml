@@ -1,0 +1,9 @@
+# general
+
+# train
+data_path: "./data/tfrecord"
+input_shape: [112, 112, 3]
+backbone_type: "MobileNetV3Large"
+batch_size: 32
+epochs: 20
+# predict

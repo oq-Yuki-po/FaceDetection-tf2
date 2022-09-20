@@ -23,6 +23,7 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - \
     python3-opencv
 
 ENV PYTHONPATH "${PYTHONPATH}:/workspaces/FaceDetection-tf2"
+ENV TF_CPP_MIN_LOG_LEVEL 2
 
 EXPOSE 8888 6006
 # [Optional] Uncomment this line to install global node packages.
