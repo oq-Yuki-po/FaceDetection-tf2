@@ -11,7 +11,7 @@ def predict():
 
     config = load_yaml("config.yaml")
     image_path = config["image_path"]
-    typer.echo("image_path: {}".format(image_path))
+    typer.echo(f"image_path: {image_path}")
 
     image = tf.io.read_file(image_path)
     image = tf.image.decode_image(image, channels=3)
@@ -30,15 +30,14 @@ def predict():
         interpreter.set_tensor(input_details[0]['index'], image)
         interpreter.invoke()
         output_data = interpreter.get_tensor(output_details[0]['index'])
-        typer.echo("output_data: {}".format(output_data))
-        typer.echo("label: {}".format(label[output_data.argmax()]))
     else:
         typer.echo("using h5")
         model_path = config["model_path"]
         model = load_model(model_path)
-        pred = model.predict(image)
-        typer.echo(pred)
-        typer.echo(label[pred.argmax()])
+        output_data = model.predict(image)
+
+    typer.echo(f"output_data: {output_data}")
+    typer.echo(f"label: {label[output_data.argmax()]}")
 
 
 if __name__ == "__main__":
